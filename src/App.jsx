@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useSpring, animated, to as interpolate, createInterpolator } from '@react-spring/web'
-import bezier from 'bezier-easing'
 import UserCardList from './components/UserCardList'
 
-// Animated Submit Button Component
 function AnimatedSubmitButton({ isLoading }) {
   const [isHovered, setIsHovered] = useState(false)
   const spring = useSpring({
@@ -25,7 +23,6 @@ function AnimatedSubmitButton({ isLoading }) {
   )
 }
 
-// Animated Dark Mode Toggle Component
 function AnimatedDarkModeToggle({ darkMode, toggleDarkMode }) {
   const spring = useSpring({
     rotate: darkMode ? 180 : 0,
@@ -43,9 +40,6 @@ function AnimatedDarkModeToggle({ darkMode, toggleDarkMode }) {
   )
 }
 
-// Easing function
-const easeInOut = bezier(0.42, 0, 0.58, 1)
-
 function App() {
   const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
@@ -53,7 +47,6 @@ function App() {
   const [error, setError] = useState(null)
   const [darkMode, setDarkMode] = useState(false)
 
-  // Hardcoded gradient values
   const gradientConfig = {
     from: '#0bd1ff',
     mid: '#35833d',
@@ -71,9 +64,9 @@ function App() {
   const coordinates = useMemo(() => {
     return Array.from({ length: gradientConfig.stops }, (_, i) => {
       const t = i / (gradientConfig.stops - 1)
-      return { x: t, y: easeInOut(t) }
+      return { x: t, y: t * t * (3 - 2 * t) }
     })
-  }, [])
+  }, [gradientConfig.stops])
 
   const allStops = interpolate([colorFrom, colorMid, colorTo], (from, mid, to) => {
     const blend = createInterpolator({ range: [0, 0.5, 1], output: [from, mid, to] })
@@ -113,19 +106,19 @@ function App() {
   }
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
+    setDarkMode(prevMode => !prevMode)
   }
 
   return (
     <animated.div
-      className="min-h-screen flex items-center justify-center transition-colors duration-300"
+      className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${darkMode ? 'dark' : ''}`}
       style={{
         backgroundImage: allStops.to((...args) => `linear-gradient(${gradientConfig.angle}deg, ${args.join(', ')})`),
       }}
     >
       <div className="w-full max-w-md p-6 bg-white bg-opacity-80 dark:bg-gray-800 dark:bg-opacity-80 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white text-center flex-grow">
+          <h1 className="text-3xl font-bold text-blue-600 dark:text-yellow-400 text-center flex-grow">
             Github User Query
           </h1>
           <AnimatedDarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
