@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import UserCardList from './components/UserCardList'
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [username, setUsername] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+  // State variables
+  const [users, setUsers] = useState([]); // Stores the list of fetched users
+  const [username, setUsername] = useState(''); // Stores the current input username
+  const [isLoading, setIsLoading] = useState(false); // Indicates if a request is in progress
+  const [error, setError] = useState(null); // Stores any error messages
+  const [darkMode, setDarkMode] = useState(false); // Toggles dark mode
 
+  // Effect to apply or remove dark mode class on the document
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark')
@@ -16,15 +18,16 @@ function App() {
     }
   }, [darkMode])
 
+  // Handler for input change
   const handleChange = (e) => {
     setUsername(e.target.value);
   };
 
+  // Handler for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await fetch(`https://api.github.com/users/${username}`);
       if (!response.ok) throw new Error('User not found or API request failed');
@@ -38,6 +41,7 @@ function App() {
     }
   };
 
+  // Handler for toggling dark mode
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -46,10 +50,14 @@ function App() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Github User Query</h1>
+          <div className="flex-grow">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
+              Github User Query
+            </h1>
+          </div>
           <button 
             onClick={toggleDarkMode} 
-            className="p-2 rounded-full bg-gray-200 dark:bg-gray-600"
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-600 ml-4"
           >
             {darkMode ? '🌞' : '🌙'}
           </button>
