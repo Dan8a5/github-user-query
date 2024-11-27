@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useSpring, animated, to as interpolate, createInterpolator } from '@react-spring/web'
 import UserCardList from './components/UserCardList'
 
+// Animated submit button component with hover effects
 function AnimatedSubmitButton({ isLoading }) {
   const [isHovered, setIsHovered] = useState(false)
   const spring = useSpring({
@@ -23,6 +24,7 @@ function AnimatedSubmitButton({ isLoading }) {
   )
 }
 
+// Animated dark mode toggle button with rotation effect
 function AnimatedDarkModeToggle({ darkMode, toggleDarkMode }) {
   const spring = useSpring({
     rotate: darkMode ? 180 : 0,
@@ -41,12 +43,14 @@ function AnimatedDarkModeToggle({ darkMode, toggleDarkMode }) {
 }
 
 function App() {
+  // State declarations
   const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [darkMode, setDarkMode] = useState(false)
 
+  // Configuration for the gradient background
   const gradientConfig = {
     from: '#0bd1ff',
     mid: '#35833d',
@@ -55,12 +59,14 @@ function App() {
     stops: 5,
   }
 
+  // Spring animation for gradient colors
   const { colorFrom, colorMid, colorTo } = useSpring({
     colorFrom: gradientConfig.from,
     colorMid: gradientConfig.mid,
     colorTo: gradientConfig.to,
   })
 
+  // Calculate coordinates for gradient stops
   const coordinates = useMemo(() => {
     return Array.from({ length: gradientConfig.stops }, (_, i) => {
       const t = i / (gradientConfig.stops - 1)
@@ -68,6 +74,7 @@ function App() {
     })
   }, [gradientConfig.stops])
 
+  // Interpolate colors for gradient stops
   const allStops = interpolate([colorFrom, colorMid, colorTo], (from, mid, to) => {
     const blend = createInterpolator({ range: [0, 0.5, 1], output: [from, mid, to] })
     return coordinates.map(({ x, y }) => {
@@ -76,6 +83,7 @@ function App() {
     })
   })
 
+  // Effect to toggle dark mode class on document
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark')
@@ -84,10 +92,12 @@ function App() {
     }
   }, [darkMode])
 
+  // Handle input change
   const handleChange = (e) => {
     setUsername(e.target.value)
   }
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -105,6 +115,7 @@ function App() {
     }
   }
 
+  // Toggle dark mode
   const toggleDarkMode = () => {
     setDarkMode(prevMode => !prevMode)
   }
